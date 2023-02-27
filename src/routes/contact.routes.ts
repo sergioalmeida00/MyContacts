@@ -7,6 +7,7 @@ routerContact.post('/',ContactController.store);
 routerContact.get('/', ContactController.index);
 routerContact.get('/:id', ContactController.show);
 routerContact.put('/:id', ContactController.update);
+routerContact.delete('/:id/contact', ContactController.delete);
 
 export {routerContact}
 

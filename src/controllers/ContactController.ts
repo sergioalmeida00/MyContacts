@@ -77,8 +77,9 @@ class ContactController{
       return response.status(404).json({error:"Contact does not exist"})
     }
 
-    return response.status(204).json("");
+    await ContactRepository.delete(id);
 
+    return response.sendStatus(204);
   }
 }
 
