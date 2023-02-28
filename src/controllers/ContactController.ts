@@ -21,7 +21,7 @@ class ContactController{
      if(!id){
         return response.status(404).json({message:"Id invalid."})
      }
-     const contactResult = await ContactRepository.findById(id);
+     const contactResult = await ContactRepository.findById({id});
 
      return response.status(200).json({contactResult});
 
@@ -31,7 +31,7 @@ class ContactController{
   async store(request:Request, response:Response){
     const {name, email, phone, category_id} = request.body;
 
-    const contactEmailExists = await ContactRepository.findByEmail(email);
+    const contactEmailExists = await ContactRepository.findByEmail({email});
 
     if(contactEmailExists){
       return response.status(404).json({error:'This e-mail is already in use!'});
@@ -47,8 +47,8 @@ class ContactController{
     const { name, email, phone, category_id } = request.body;
     const {id} = request.params;
 
-    const contactExists = await ContactRepository.findById(id);
-    const contactEmailExists = await ContactRepository.findByEmail(email);
+    const contactExists = await ContactRepository.findById({id});
+    const contactEmailExists = await ContactRepository.findByEmail({email});
 
     if(!contactExists){
       return response.status(404).json({error:"Contact does not exist"});
@@ -71,13 +71,13 @@ class ContactController{
 
     const {id} = getContactIdParamSchema.parse(request.params);
 
-    const contactExists = await ContactRepository.findById(id);
+    const contactExists = await ContactRepository.findById({id});
 
     if(!contactExists){
       return response.status(404).json({error:"Contact does not exist"})
     }
 
-    await ContactRepository.delete(id);
+    await ContactRepository.delete({id});
 
     return response.sendStatus(204);
   }

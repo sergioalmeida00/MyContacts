@@ -1,34 +1,28 @@
 import { knex } from "../database";
 import {randomUUID } from 'node:crypto'
+import { InputContactDto, InputContactFindByIdDto, InputContactFindEmailDto, OutputContactDto } from "../dto/contact.dto";
 
-interface requestBodyContact{
-  name:string,
-  email:string,
-  phone?:string,
-  category_id?:string
-  id?:string
-}
 
 class ContactRepository{
-  async findAll():Promise<requestBodyContact[]>{
-    const contacts = await knex<requestBodyContact>('contacts').select('*');
+  async findAll():Promise<InputContactDto[]>{
+    const contacts = await knex<InputContactDto>('contacts').select('*');
     return contacts
   }
 
-  async findById(id:string):Promise<requestBodyContact | undefined>{
-    const contactById = await knex<requestBodyContact>('contacts').select('*').where('id',id).first();
+  async findById({id}:InputContactFindByIdDto):Promise<OutputContactDto | undefined>{
+    const contactById = await knex<OutputContactDto>('contacts').select('*').where('id',id).first();
     return contactById;
   }
 
-  async findByEmail(email:string):Promise<requestBodyContact | undefined>{
+  async findByEmail({email}:InputContactFindEmailDto):Promise<OutputContactDto | undefined>{
 
-    const contactByEmail = await knex<requestBodyContact>('contacts').where({email}).select('*').first();
+    const contactByEmail = await knex<OutputContactDto>('contacts').where({email}).select('*').first();
 
     return contactByEmail;
   }
 
-  async create({name, email, phone, category_id}:requestBodyContact):Promise<void>{
-    await knex<requestBodyContact>('contacts').insert({
+  async create({name, email, phone, category_id}:InputContactDto):Promise<void>{
+    await knex<InputContactDto>('contacts').insert({
       id:randomUUID(),
       name,
       email,
@@ -37,13 +31,13 @@ class ContactRepository{
     })
   }
 
-  async delete(id:string):Promise<void>{
-    await knex<requestBodyContact>('contacts').where({id}).del();
+  async delete({id}:InputContactFindByIdDto):Promise<void>{
+    await knex<InputContactFindByIdDto>('contacts').where('id',id).del();
   }
 
-  async update({name,email,phone,category_id, id}:requestBodyContact):Promise<void>{
+  async update({name,email,phone,category_id, id}:InputContactDto):Promise<void>{
 
-   await knex<requestBodyContact>('contacts').where('id',id).update({
+   await knex<InputContactDto>('contacts').where('id',id).update({
       name,
       email,
       phone,
