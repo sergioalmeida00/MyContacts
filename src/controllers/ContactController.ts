@@ -13,7 +13,7 @@ class ContactController {
   // Obter um registro
   async show(request: Request, response: Response): Promise<Response> {
     const getContactsParamSchema = z.object({
-      id: z.string().uuid({ message: 'Não é um ID valido' }),
+      id: z.string().uuid(),
     })
     const { id } = getContactsParamSchema.parse(request.params)
 
@@ -27,7 +27,16 @@ class ContactController {
 
   // Criar um novo registro
   async store(request: Request, response: Response) {
-    const { name, email, phone, category_id } = request.body
+    const getBodyContactSchema = z.object({
+      name: z.string().min(10),
+      email: z.string().email(),
+      phone: z.string().min(10).nullable(),
+      category_id: z.string().uuid().nullable(),
+    })
+
+    const { name, email, phone, category_id } = getBodyContactSchema.parse(
+      request.body,
+    )
 
     const contactEmailExists = await ContactRepository.findByEmail({ email })
 
