@@ -5,7 +5,13 @@ import ContactRepository from '../repositories/ContactRepository'
 class ContactController {
   // Listar todos os registros
   async index(request: Request, response: Response): Promise<Response> {
-    const contacts = await ContactRepository.findAll()
+    const orderByContactSchema = z.object({
+      orderBy: z.enum(['ASC', 'DESC']).default('ASC'),
+    })
+
+    const { orderBy } = orderByContactSchema.parse(request.query)
+
+    const contacts = await ContactRepository.findAll(orderBy)
 
     return response.status(200).json({ contacts })
   }

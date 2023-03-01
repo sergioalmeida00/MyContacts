@@ -8,8 +8,11 @@ import {
 } from '../dto/contact.dto'
 
 class ContactRepository {
-  async findAll(): Promise<InputContactDto[]> {
-    const contacts = await knex<InputContactDto>('contacts').select('*')
+  async findAll(orderBy: string): Promise<OutputContactDto[]> {
+    const direction = orderBy.toLocaleUpperCase() === 'DESC' ? 'DESC' : 'ASC'
+    const contacts = await knex<OutputContactDto>('contacts')
+      .select('*')
+      .orderBy('name', direction)
     return contacts
   }
 
@@ -40,13 +43,15 @@ class ContactRepository {
     phone,
     category_id,
   }: InputContactDto): Promise<void> {
-    await knex<InputContactDto>('contacts').insert({
-      id: randomUUID(),
-      name,
-      email,
-      phone,
-      category_id,
-    })
+    await knex<InputContactDto>('contacts')
+      .insert({
+        id: randomUUID(),
+        name,
+        email,
+        phone,
+        category_id,
+      })
+      .returning('*')
   }
 
   async delete({ id }: InputContactFindByIdDto): Promise<void> {
