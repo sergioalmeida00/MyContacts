@@ -1,14 +1,12 @@
-import { Router } from "express";
-import ContactController from "../controllers/ContactController";
+import { Router } from 'express'
+import ContactController from '../controllers/ContactController'
 
-const routerContact = Router();
+const routerContact = Router()
 
-routerContact.post('/',ContactController.store);
-routerContact.get('/', ContactController.index);
-routerContact.get('/:id', ContactController.show);
-routerContact.put('/:id', ContactController.update);
-routerContact.delete('/:id', ContactController.delete);
+routerContact.post('/', ContactController.store)
+routerContact.get('/', ContactController.index)
+routerContact.get('/:id', ContactController.show)
+routerContact.put('/:id', ContactController.update)
+routerContact.delete('/:id', ContactController.delete)
 
-export {routerContact}
-
-
+export { routerContact }
