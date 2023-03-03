@@ -1,5 +1,5 @@
-import 'dotenv/config';
-import { z } from 'zod';
+import 'dotenv/config'
+import { z } from 'zod'
 
 const envSchema = z.object({
   DATABASE_HOST: z.string(),
@@ -18,4 +18,4 @@ if (_env.success === false) {
   throw new Error('Invalid')
 }
 
-export const env = _env.data;
+export const env = _env.data

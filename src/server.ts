@@ -1,11 +1,4 @@
-import express from "express";
-import { env } from "./env";
-import { router } from "./routes";
-
-const app = express();
-app.use(express.json());
-app.use(router);
-
+import { app } from './app'
+import { env } from './env'
 
 app.listen(env.PORT, () => console.log('Server is running.. 🚀️🚀️'))
-
