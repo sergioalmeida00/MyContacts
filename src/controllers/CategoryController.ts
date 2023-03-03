@@ -22,16 +22,16 @@ class CategoryController {
     return response.status(200).json(category)
   }
 
-  async store(request: Request, response: Response) {
+  async store(request: Request, response: Response): Promise<Response> {
     const { title } = request.body
 
     if (!title) {
       response.status(400).json({ error: 'Title cannot be null' })
     }
 
-    await CategoryRepository.create({ title })
+    const responseCategory = await CategoryRepository.create({ title })
 
-    return response.sendStatus(201)
+    return response.status(201).json({ responseCategory })
   }
 
   async update(request: Request, response: Response): Promise<Response> {

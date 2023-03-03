@@ -2,13 +2,17 @@ import { app } from '../app'
 import request from 'supertest'
 import { describe, expect, it } from 'vitest'
 
-describe('Contacts Routes', () => {
+describe('Contacts Routes', async () => {
+  const createCategoryResponse = await request(app)
+    .post('/categories')
+    .send({ title: 'TEST CATEGORY CONTACT' })
+
   it('should be able to list all Contacts', async () => {
     await request(app).post('/contacts').send({
       name: 'Jhon Doe test',
       email: 'jhondoe@teste.com',
       phone: '(99)99999-9999',
-      category_id: '0beab73f-0a1f-4cc1-a4a9-b917a54b4722',
+      category_id: createCategoryResponse.body.responseCategory[0].id,
     })
 
     const result = await request(app).get('/contacts').expect(200)
@@ -24,7 +28,7 @@ describe('Contacts Routes', () => {
       name: 'Jhon Doe test',
       email: 'jhondoe1@teste.com',
       phone: '(99)99999-9999',
-      category_id: '0beab73f-0a1f-4cc1-a4a9-b917a54b4722',
+      category_id: createCategoryResponse.body.responseCategory[0].id,
     })
     const resultErroResponse = await request(app)
       .post('/contacts')
@@ -32,9 +36,29 @@ describe('Contacts Routes', () => {
         name: 'Jhon Doe test',
         email: 'jhondoe1@teste.com',
         phone: '(99)99999-9999',
-        category_id: '0beab73f-0a1f-4cc1-a4a9-b917a54b4722',
+        category_id: createCategoryResponse.body.responseCategory[0].id,
       })
       .expect(400)
     expect(resultErroResponse.body).toHaveProperty('error')
+  })
+
+  it('should be possible to register a new contact', async () => {
+    await request(app)
+      .post('/contacts')
+      .send({
+        name: 'Jhon Doe test',
+        email: 'jhondoe12@teste.com',
+        phone: '(99)99999-9999',
+        category_id: createCategoryResponse.body.responseCategory[0].id,
+      })
+      .expect(201)
+  })
+
+  it('should be possible to delete a contact', async () => {
+    const resultContacts = await request(app).get('/contacts')
+
+    const id = resultContacts.body.contacts[0].id
+
+    await request(app).delete(`/contacts/${id}`).expect(204)
   })
 })

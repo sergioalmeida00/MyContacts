@@ -24,11 +24,15 @@ class CategoryRepository {
     return category
   }
 
-  async create({ title }: InputCategoryDto): Promise<void> {
-    await knex<InputCategoryDto>('categories').insert({
-      id: randomUUID(),
-      title,
-    })
+  async create({ title }: InputCategoryDto): Promise<OutputCategoryDto[]> {
+    const resultCategory = await knex<OutputCategoryDto>('categories')
+      .insert({
+        id: randomUUID(),
+        title,
+      })
+      .returning('*')
+
+    return resultCategory
   }
 
   async update(id: string, { title }: InputCategoryDto): Promise<void> {
