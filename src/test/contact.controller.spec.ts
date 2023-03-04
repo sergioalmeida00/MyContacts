@@ -61,4 +61,18 @@ describe('Contacts Routes', async () => {
 
     await request(app).delete(`/contacts/${id}`).expect(204)
   })
+
+  it('should be possible to list a contact', async () => {
+    const resultContacts = await request(app).get('/contacts')
+    const id = resultContacts.body.contacts[0].id
+
+    const contactIdResponse = await request(app)
+      .get(`/contacts/${id}`)
+      .expect(200)
+    expect(contactIdResponse.body.contactResult).toHaveProperty('id')
+    expect(contactIdResponse.body.contactResult).toHaveProperty('name')
+    expect(contactIdResponse.body.contactResult).toHaveProperty('email')
+    expect(contactIdResponse.body.contactResult).toHaveProperty('phone')
+    expect(contactIdResponse.body.contactResult).toHaveProperty('category_id')
+  })
 })
