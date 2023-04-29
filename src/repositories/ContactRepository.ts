@@ -10,9 +10,11 @@ import {
 class ContactRepository {
   async findAll(orderBy: string): Promise<OutputContactDto[]> {
     const direction = orderBy.toLocaleUpperCase() === 'DESC' ? 'DESC' : 'ASC'
-    const contacts = await knex<OutputContactDto>('contacts')
-      .select('*')
-      .orderBy('name', direction)
+    const contacts = await knex
+      .from('contacts')
+      .innerJoin('categories', 'contacts.category_id', 'categories.id')
+      .orderBy('contacts.name', direction)
+
     return contacts
   }
 
