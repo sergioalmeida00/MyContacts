@@ -10,11 +10,16 @@ import {
 class ContactRepository {
   async findAll(orderBy: string): Promise<OutputContactDto[]> {
     const direction = orderBy.toLocaleUpperCase() === 'DESC' ? 'DESC' : 'ASC'
-    const contacts = await knex
-      .from('contacts')
-      .innerJoin('categories', 'contacts.category_id', 'categories.id')
+    const contacts = await knex('contacts')
+      .join('categories', 'contacts.category_id', 'categories.id')
+      .select(
+        'contacts.id',
+        'contacts.name',
+        'contacts.phone',
+        'contacts.email',
+        'categories.title',
+      )
       .orderBy('contacts.name', direction)
-
     return contacts
   }
 
@@ -45,9 +50,10 @@ class ContactRepository {
     phone,
     category_id,
   }: InputContactDto): Promise<void> {
+    const id = randomUUID()
     await knex<InputContactDto>('contacts')
       .insert({
-        id: randomUUID(),
+        id,
         name,
         email,
         phone,
